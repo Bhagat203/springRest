@@ -1,0 +1,148 @@
+ServletUriComponentsBuilder class which has a method formCurrentRequest using which we can get the current uri
+and to add data path and buildAndExpand are the two method and toUri return uri
+
+To check spring starter validation use @Vaild with that BindingResult instance also required to check for the errors
+this instance has a method called hasError
+
+To create our own CustomizedException template we need to create a class for that with required entity 
+and 
+Create another class which extends ResponseEntityExceptionHandler
+and annotate which @RestController and @ControllerAdvice 
+@ExceptionHandler(which exception want handle)
+and create a method with public final ReponseEntity methodname(CustomerNotFoundException ex,  WebRequest request){
+ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),ex.getMessage(),request.getDescription(false));
+		return new ResponseEntity(exceptionResponse,HttpStatus.NOT_FOUND);
+	}
+}
+this method triggers at time binding ex. entered a wrong data from postman to save
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		// TODO Auto-generated method stub
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),ex.getMessage(),ex.getBindingResult().toString());
+		return new ResponseEntity(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
+	@ExceptionHandler(DataEnteredException.class)
+	public final ResponseEntity<Object> handleBadRequestException(DataEnteredException ex,  WebRequest request) {
+		// TODO Auto-generated method stub
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(),ex.getMessage(),request.getDescription(false));
+		return new ResponseEntity(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
+HATEOAS(hyper media as the enginue of application state) -->providing additional features send other resourses
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
+		Procedure to add extra resourse 
+
+		EntityModel<Customer> resource = EntityModel.of(customer);
+		//gets the method
+		WebMvcLinkBuilder linkTo = 
+				linkTo(methodOn(this.getClass()).findAll());
+			// add the link to resourse with a name : all-users
+		resource.add(linkTo.withRel("all-users"));
+
+Internalization customization of the application to different people around world
+-->Configuration
+- LocalResolver
+	-Default Locale - Local US
+- ResurseBundleMEssageSource
+
+	@Bean
+	public LocaleResolver localeResolver() {
+		SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+		localeResolver.setDefaultLocale(Locale.US);
+		return localeResolver;
+	}
+	@Bean
+	public ResourceBundleMessageSource messageSource() {
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		messageSource.setBasename("messages");
+		return messageSource;
+	}
+
+create properties file with name messages 
+1.messages will act as default
+2.messages_fr will take an next option
+
+	@Autowired
+	private MessageSource messageSource; 
+	
+	@GetMapping("/hellointrn")
+	public String hello(@RequestHeader(name = "Accepted-lanugage",required = false) Locale locale) {
+		return messageSource.getMessage("good.morning.message", null,locale);
+	
+For the data send to specify the xml
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-xml</artifactId>
+</dependency>
+
+Swagger
+Tools to :
+Develop APIs
+Interact with Apis
+Document Apis
+
+In swagger takes the meta datawritten by the devplr's to  make the document
+			<dependency>
+		  <groupId>io.springfox</groupId>
+		  <artifactId>springfox-boot-starter</artifactId>
+		  <version>3.0.0</version>
+		</dependency>
+Acurator 
+Are used to monitor
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>-->to collect API details
+    <version>2.6.1</version>
+</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-rest-hal-browser -->
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-data-rest-hal-browser</artifactId>-->to view in UI
+    <version>3.3.9.RELEASE</version>
+</dependency>
+http://localhost:8080/browser/index.htm
+http://localhost:8080/actuator
+management.endpoints.web.exposure.include=* to display all the 
+
+
+--> In respose if we want to restrict the send some attributes annotate it with the @JsonIgnore
+Or to Class use @JsonIgnoreProperties({""}) --> this creates a static filter
+
+For dyanmic
+		SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept( "id","name","date");
+		FilterProvider filterProvider = new SimpleFilterProvider().addFilter("CustomerDetails", filter);
+		MappingJacksonValue jacksonValue = new MappingJacksonValue(dao.findAll());
+		jacksonValue.setFilters(filterProvider);
+		return jacksonValue;
+
+
+JPA Essentitals 
+1. Entities
+2. Relationship
+3. JPQL Like HQL
+4. Mapping
+
+2 ways to store 
+1 . EntityManager - manually
+	@Transactional
+public class CustDao {
+	@PersistenceContext
+	EntityManager em;
+	private  static int count=3;
+	private static List<Customer> users= new ArrayList<Customer>(); 
+	static {
+		users.add(new Customer(1,"raj",new Date()));
+		users.add(new Customer(2,"ram",new Date()));
+	}
+	public Customer save(Customer customer) {
+		em.persist(customer);
+		return customer;
+	}
+}
+spring.jpa.show-sql=true
+spring.h2.console.enable=true
+logging.level.org.springframework=debug
+2 . JPARepository - internally communicates to EntityManager

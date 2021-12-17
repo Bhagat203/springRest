@@ -1,0 +1,31 @@
+Web Service following W3C defination
+1. interoperable - plantform independent
+2. machine to machine 
+3. interaction
+1.  Request Identification 
+	1.structure
+	2.format
+	3.target/end point
+-->2 types of web services
+	1. simple Object Access protocol(SOAP)-->XML request and ends with (.WSDL) Service defination 
+		SOAP ENVELOPE 
+			1. SOAP HEADER carrries essential meta information like authentication signature username and password
+			2. SOAP BODY -->request and response
+
+	Transport using HTTP and MQ-MESSAGE QUEUE
+	2. Rest(REPRESENTATIONAL STATE TRANSFER) -Architectural type SERVICE DEFINATION -W3C DEFINATION
+		REST STUCTURE
+			1. REST
+			2. HTTP
+			3. METHODS and STATUS CODE FOR RESPONSE
+	Transfort HTTP
+Essential Parts Of REST
+1. URI(Uniform Resource Identifier)
+2. Representation 
+	1. JSON
+	2. XML
+	3. TEXT
+	4. HTML .. etc
+
+
+	
